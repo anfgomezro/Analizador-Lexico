@@ -32,8 +32,8 @@ tokens = (
     'else',
     'log',
     'funcion',
-    'identificador',
-    'string',
+    'id',
+    'token_string',
     'false',
     'true',
     'in',
@@ -41,6 +41,7 @@ tokens = (
     'retorno',
     'token_float',
     'token_integer',
+    'importar',
 )
 
 states = (
@@ -128,22 +129,27 @@ def t_log(token):
     token.type = 'log'
     return token
 
-def t_identificador(token):
+def t_id(token):
     r'[a-zA-Z][a-zA-Z_]*'
     token.value = token.value
     return token
 
+def t_importar(token):
+    r'importar'
+    token.value = token.value
+    return token
+
 def t_token_float(token):
-    r'-?[0-9]+\.[0-9]+'
+    r'[0-9]+\.[0-9]+'
     token.value = float(token.value)
     return token
 
 def t_token_integer(token):
-    r'-?[0-9]+'
+    r'[0-9]+'
     token.value = int(token.value)
     return token
 
-def t_string(token):
+def t_token_string(token):
     r'"(?:[^"\\]|(?:\\.))*"'
     token.value = token.value[1:-1]
     return token
@@ -182,14 +188,31 @@ def test_lexer(input_string):
         tok = lexer.token()
         if not tok:
             break
-        if(tok.value == tok.type):
-            print("<" + tok.type +"," + str(tok.lineno) + "," + str(find_column(input_string,tok)) + ">")
-        else:
+        if(tok.type == 'token_string' or tok.type == 'token_integer' or tok.type == 'token_float' or tok.type == 'id'):
             print("<"+tok.type+","+str(tok.value)+","+str(tok.lineno)+","+str(find_column(input_string,tok))+">")
+            #return "<"+tok.type+","+str(tok.value)+","+str(tok.lineno)+","+str(find_column(input_string,tok))+">"
+        else:
+            print("<" + tok.type +"," + str(tok.lineno) + "," + str(find_column(input_string,tok)) + ">")
+            #return "<" + tok.type +"," + str(tok.lineno) + "," + str(find_column(input_string,tok)) + ">"
 
-file = open("test.txt","r")
-input = file.read()
-file.close()
+fileInput = open("./testCases/0/in01.txt","r")
+input = fileInput.read()
+fileInput.close()
+
+fileOutput = open("./testCases/0/out01.txt","r")
+out = fileOutput.read()
+fileOutput.close()
 
 print(input)
-print(test_lexer(input))
+print(out)
+print(test_lexer(input) == out)
+
+#result = open('result.txt','w')
+#result.write(test_lexer(input))
+#result.close()
+
+#filefinal = open("result.txt","r")
+#resultado = filefinal.read()
+#filefinal.close()
+
+#print(resultado == out)
