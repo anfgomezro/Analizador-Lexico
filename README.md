@@ -1,2 +1,2 @@
-# Analizador-L-xico
+# Analizador Lexico
 Analizador Léxico de Lenguaje TL
